@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Cloud, Download, Trash2, Shield, Lock, HardDrive } from 'lucide-react';
+import { Cloud, Download, Trash2, Shield, Lock, HardDrive, CheckCircle } from 'lucide-react';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
+import { useToast } from '@/hooks/use-toast';
 
-const storageData = [
+const initialStorageData = [
   { date: '2024-06-11', size: '2.4 GB', files: 48, status: 'backed_up' },
   { date: '2024-06-10', size: '2.1 GB', files: 42, status: 'backed_up' },
   { date: '2024-06-09', size: '2.3 GB', files: 46, status: 'backed_up' },
@@ -16,8 +17,11 @@ const storageData = [
 ];
 
 export const CloudStoragePanel: React.FC = () => {
+  const [storageData, setStorageData] = useState(initialStorageData);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
+  const [downloadingItems, setDownloadingItems] = useState<Set<string>>(new Set());
+  const { toast } = useToast();
 
   const totalStorage = 45.2; // GB
   const usedStorage = 12.3; // GB
@@ -29,15 +33,46 @@ export const CloudStoragePanel: React.FC = () => {
   };
 
   const handleDeleteConfirm = () => {
-    console.log(`Deleting footage for ${selectedDate}`);
+    setStorageData(prev => prev.filter(item => item.date !== selectedDate));
     setShowDeleteDialog(false);
+    
+    toast({
+      title: "Footage Deleted",
+      description: `Successfully deleted footage for ${selectedDate}`,
+      duration: 3000,
+    });
+  };
+
+  const handleDownload = (date: string, size: string) => {
+    setDownloadingItems(prev => new Set(prev).add(date));
+    
+    // Simulate download progress
+    setTimeout(() => {
+      setDownloadingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(date);
+        return newSet;
+      });
+      
+      toast({
+        title: "Download Complete",
+        description: `Downloaded ${size} of footage for ${date}`,
+        duration: 3000,
+      });
+    }, 3000);
+    
+    toast({
+      title: "Download Started",
+      description: `Downloading ${size} of footage for ${date}`,
+      duration: 2000,
+    });
   };
 
   return (
     <div className="space-y-6">
       {/* Storage Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glass-card border-white/10">
+        <Card className="glass-card border-white/10 transform transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center space-x-3">
               <div className="p-2 rounded-lg sky-accent">
@@ -65,7 +100,7 @@ export const CloudStoragePanel: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10">
+        <Card className="glass-card border-white/10 transform transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center space-x-3">
               <div className="p-2 rounded-lg neon-indicator animate-pulse-slow">
@@ -90,7 +125,7 @@ export const CloudStoragePanel: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10">
+        <Card className="glass-card border-white/10 transform transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center space-x-3">
               <div className="p-2 rounded-lg sunset-accent">
@@ -121,7 +156,7 @@ export const CloudStoragePanel: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             {storageData.map((day, index) => (
-              <div key={day.date} className="flex items-center justify-between p-4 glass-card-light rounded-xl border border-white/5">
+              <div key={day.date} className="flex items-center justify-between p-4 glass-card-light rounded-xl border border-white/5 transform transition-all duration-300 hover:scale-102 hover:border-cyan-400/20">
                 <div className="flex items-center space-x-4">
                   <div className="text-sm font-medium text-white">{day.date}</div>
                   <Badge variant="outline" className="border-cyan-500/30 text-cyan-300 bg-cyan-500/10">
@@ -131,16 +166,31 @@ export const CloudStoragePanel: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-3">
                   <Badge className="neon-indicator">
+                    <CheckCircle className="w-3 h-3 mr-1" />
                     Backed Up
                   </Badge>
-                  <Button size="sm" className="premium-button">
-                    <Download className="w-4 h-4 mr-1" />
-                    Download
+                  <Button 
+                    size="sm" 
+                    className="premium-button transform transition-all duration-200 hover:scale-105"
+                    onClick={() => handleDownload(day.date, day.size)}
+                    disabled={downloadingItems.has(day.date)}
+                  >
+                    {downloadingItems.has(day.date) ? (
+                      <>
+                        <div className="w-4 h-4 mr-1 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                        Downloading...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-1" />
+                        Download
+                      </>
+                    )}
                   </Button>
                   <Button 
                     size="sm" 
                     variant="outline" 
-                    className="border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400 transition-all duration-300"
+                    className="border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400 transition-all duration-300 transform hover:scale-105"
                     onClick={() => handleDeleteClick(day.date)}
                   >
                     <Trash2 className="w-4 h-4 mr-1" />

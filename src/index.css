@@ -172,6 +172,14 @@
     animation: glow 2s ease-in-out infinite alternate;
   }
 
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-scale-102 {
+    transform: scale(1.02);
+  }
+
   @keyframes glow {
     from {
       box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
@@ -181,7 +189,22 @@
     }
   }
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .animate-pulse-slow {
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .hover\:scale-102:hover {
+    transform: scale(1.02);
   }
 }
