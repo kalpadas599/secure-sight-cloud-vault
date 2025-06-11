@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Cloud, Download, Trash2, Shield, Lock } from 'lucide-react';
+import { Cloud, Download, Trash2, Shield, Lock, HardDrive } from 'lucide-react';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 
 const storageData = [
@@ -37,20 +37,27 @@ export const CloudStoragePanel: React.FC = () => {
     <div className="space-y-6">
       {/* Storage Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="glass-card border-white/10">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center space-x-2">
-              <Cloud className="w-5 h-5 text-blue-500" />
-              <span>Total Storage</span>
+            <CardTitle className="text-lg flex items-center space-x-3">
+              <div className="p-2 rounded-lg sky-accent">
+                <HardDrive className="w-5 h-5" />
+              </div>
+              <span className="text-white">Total Storage</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-400">Used</span>
-                <span>{usedStorage} GB / {totalStorage} GB</span>
+                <span className="text-sky-300 font-semibold">{usedStorage} GB / {totalStorage} GB</span>
               </div>
-              <Progress value={storagePercentage} className="h-2" />
+              <Progress value={storagePercentage} className="h-3 bg-slate-700/50">
+                <div 
+                  className="h-full bg-gradient-to-r from-sky-400 to-blue-500 rounded-full transition-all duration-500"
+                  style={{ width: `${storagePercentage}%` }}
+                />
+              </Progress>
               <p className="text-xs text-slate-400">
                 {(totalStorage - usedStorage).toFixed(1)} GB remaining
               </p>
@@ -58,39 +65,43 @@ export const CloudStoragePanel: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="glass-card border-white/10">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center space-x-2">
-              <Shield className="w-5 h-5 text-green-500" />
-              <span>Backup Status</span>
+            <CardTitle className="text-lg flex items-center space-x-3">
+              <div className="p-2 rounded-lg neon-indicator animate-pulse-slow">
+                <Shield className="w-5 h-5" />
+              </div>
+              <span className="text-white">Backup Status</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm">All cameras backed up</span>
+                <div className="w-2 h-2 neon-indicator rounded-full animate-glow"></div>
+                <span className="text-sm text-emerald-300 font-medium">All cameras backed up</span>
               </div>
               <div className="text-xs text-slate-400">
                 Last sync: 2 minutes ago
               </div>
-              <Badge className="bg-green-600 text-white">
+              <Badge className="neon-indicator border-emerald-400/20">
                 Protected
               </Badge>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="glass-card border-white/10">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center space-x-2">
-              <Lock className="w-5 h-5 text-yellow-500" />
-              <span>Retention</span>
+            <CardTitle className="text-lg flex items-center space-x-3">
+              <div className="p-2 rounded-lg sunset-accent">
+                <Lock className="w-5 h-5" />
+              </div>
+              <span className="text-white">Retention</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              <div className="text-2xl font-bold">30</div>
+              <div className="text-3xl font-bold text-orange-300">30</div>
               <div className="text-xs text-slate-400">
                 Days auto-retention policy
               </div>
@@ -103,33 +114,33 @@ export const CloudStoragePanel: React.FC = () => {
       </div>
 
       {/* Storage Details */}
-      <Card className="bg-slate-800 border-slate-700">
+      <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle>Daily Storage Breakdown</CardTitle>
+          <CardTitle className="text-white">Daily Storage Breakdown</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {storageData.map((day, index) => (
-              <div key={day.date} className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
+              <div key={day.date} className="flex items-center justify-between p-4 glass-card-light rounded-xl border border-white/5">
                 <div className="flex items-center space-x-4">
-                  <div className="text-sm font-medium">{day.date}</div>
-                  <Badge variant="outline" className="border-slate-600 text-slate-300">
+                  <div className="text-sm font-medium text-white">{day.date}</div>
+                  <Badge variant="outline" className="border-cyan-500/30 text-cyan-300 bg-cyan-500/10">
                     {day.files} files
                   </Badge>
-                  <div className="text-sm text-slate-400">{day.size}</div>
+                  <div className="text-sm text-sky-300 font-semibold">{day.size}</div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Badge className="bg-green-600">
+                <div className="flex items-center space-x-3">
+                  <Badge className="neon-indicator">
                     Backed Up
                   </Badge>
-                  <Button size="sm" variant="outline" className="border-slate-600 text-slate-300">
+                  <Button size="sm" className="premium-button">
                     <Download className="w-4 h-4 mr-1" />
                     Download
                   </Button>
                   <Button 
                     size="sm" 
                     variant="outline" 
-                    className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                    className="border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400 transition-all duration-300"
                     onClick={() => handleDeleteClick(day.date)}
                   >
                     <Trash2 className="w-4 h-4 mr-1" />
