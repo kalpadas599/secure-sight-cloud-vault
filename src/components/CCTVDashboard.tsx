@@ -25,6 +25,20 @@ export const CCTVDashboard: React.FC<CCTVDashboardProps> = ({ onLogout }) => {
     return () => clearInterval(timer);
   }, []);
 
+  // Close mobile menu when clicking outside or when system status is toggled
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mobileMenuOpen && !(event.target as Element)?.closest('.mobile-menu-container')) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [mobileMenuOpen]);
+
   const handleLogout = () => {
     setTimeout(() => {
       onLogout();
@@ -34,6 +48,14 @@ export const CCTVDashboard: React.FC<CCTVDashboardProps> = ({ onLogout }) => {
   const toggleSystemStatus = () => {
     setSystemOnline(!systemOnline);
     setTimeout(() => setSystemOnline(true), 5000);
+  };
+
+  const handleSystemStatusToggle = () => {
+    setShowSystemStatus(!showSystemStatus);
+    // On mobile, close the mobile menu when system status is opened
+    if (!showSystemStatus && mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
   };
 
   return (
@@ -72,12 +94,12 @@ export const CCTVDashboard: React.FC<CCTVDashboardProps> = ({ onLogout }) => {
                 className={`flex items-center space-x-3 px-4 py-2 glass-card-light rounded-full cursor-pointer transform transition-all duration-300 hover:scale-105 ${
                   systemOnline ? 'hover:bg-emerald-500/20' : 'hover:bg-red-500/20'
                 }`}
-                onClick={() => setShowSystemStatus(!showSystemStatus)}
+                onClick={handleSystemStatusToggle}
               >
                 <div className={`w-2 h-2 rounded-full animate-glow ${
                   systemOnline ? 'neon-indicator' : 'bg-red-500'
                 }`}></div>
-                <span className={`text-sm font-medium ${
+                <span className={`text-sm font-medium whitespace-nowrap ${
                   systemOnline ? 'text-emerald-300' : 'text-red-300'
                 }`}>
                   System {systemOnline ? 'Online' : 'Offline'}
@@ -85,7 +107,8 @@ export const CCTVDashboard: React.FC<CCTVDashboardProps> = ({ onLogout }) => {
               </div>
               <SystemStatusDropdown 
                 isOpen={showSystemStatus}
-                onToggle={() => setShowSystemStatus(!showSystemStatus)}
+                onToggle={handleSystemStatusToggle}
+                isMobile={false}
               />
             </div>
             <Button 
@@ -102,53 +125,60 @@ export const CCTVDashboard: React.FC<CCTVDashboardProps> = ({ onLogout }) => {
 
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 mt-2 mx-2 glass-card border-white/20 rounded-xl z-50 overflow-hidden">
-            <div className="p-4 space-y-4">
-              {/* Mobile Time Display */}
-              <div className="flex items-center space-x-2 text-slate-300 pb-2 border-b border-white/10">
-                <div className="w-1 h-1 bg-sky-400 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium">{currentTime.toLocaleString()}</span>
-              </div>
+          <div className="lg:hidden mobile-menu-container">
+            <div className="absolute top-full left-0 right-0 mt-2 mx-2 glass-card border-white/20 rounded-xl z-50 overflow-hidden">
+              <div className="p-4 space-y-4">
+                {/* Mobile Time Display */}
+                <div className="flex items-center space-x-2 text-slate-300 pb-2 border-b border-white/10">
+                  <div className="w-1 h-1 bg-sky-400 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium">{currentTime.toLocaleString()}</span>
+                </div>
 
-              {/* Mobile System Status */}
-              <div className="relative">
-                <div 
-                  className={`flex items-center justify-between p-3 glass-card-light rounded-lg cursor-pointer transition-all duration-300 ${
-                    systemOnline ? 'hover:bg-emerald-500/20' : 'hover:bg-red-500/20'
-                  }`}
-                  onClick={() => setShowSystemStatus(!showSystemStatus)}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-2 h-2 rounded-full animate-glow ${
-                      systemOnline ? 'neon-indicator' : 'bg-red-500'
-                    }`}></div>
-                    <span className={`text-sm font-medium ${
-                      systemOnline ? 'text-emerald-300' : 'text-red-300'
-                    }`}>
-                      System {systemOnline ? 'Online' : 'Offline'}
-                    </span>
+                {/* Mobile System Status */}
+                <div className="relative">
+                  <div 
+                    className={`flex items-center justify-between p-3 glass-card-light rounded-lg cursor-pointer transition-all duration-300 ${
+                      systemOnline ? 'hover:bg-emerald-500/20' : 'hover:bg-red-500/20'
+                    }`}
+                    onClick={handleSystemStatusToggle}
+                  >
+                    <div className="flex items-center space-x-3 flex-1 min-w-0">
+                      <div className={`w-2 h-2 rounded-full animate-glow flex-shrink-0 ${
+                        systemOnline ? 'neon-indicator' : 'bg-red-500'
+                      }`}></div>
+                      <span className={`text-sm font-medium truncate ${
+                        systemOnline ? 'text-emerald-300' : 'text-red-300'
+                      }`}>
+                        System {systemOnline ? 'Online' : 'Offline'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                {showSystemStatus && (
-                  <div className="mt-2">
-                    <SystemStatusDropdown 
-                      isOpen={showSystemStatus}
-                      onToggle={() => setShowSystemStatus(!showSystemStatus)}
-                    />
-                  </div>
-                )}
-              </div>
 
-              {/* Mobile Logout */}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleLogout}
-                className="w-full premium-button border-white/20 text-white hover:text-white transform transition-all duration-300 hover:scale-105 group min-h-[48px]"
-              >
-                <LogOut className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                Logout
-              </Button>
+                {/* Mobile Logout */}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="w-full premium-button border-white/20 text-white hover:text-white transform transition-all duration-300 hover:scale-105 group min-h-[48px]"
+                >
+                  <LogOut className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile System Status Dropdown - Full Width Overlay */}
+        {showSystemStatus && (
+          <div className="lg:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm" onClick={handleSystemStatusToggle}>
+            <div className="absolute top-20 left-4 right-4 max-h-[calc(100vh-6rem)] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <SystemStatusDropdown 
+                isOpen={showSystemStatus}
+                onToggle={handleSystemStatusToggle}
+                isMobile={true}
+              />
             </div>
           </div>
         )}

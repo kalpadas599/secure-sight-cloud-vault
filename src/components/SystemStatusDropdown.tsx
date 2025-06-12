@@ -9,9 +9,10 @@ import { useToast } from '@/hooks/use-toast';
 interface SystemStatusDropdownProps {
   isOpen: boolean;
   onToggle: () => void;
+  isMobile?: boolean;
 }
 
-export const SystemStatusDropdown: React.FC<SystemStatusDropdownProps> = ({ isOpen, onToggle }) => {
+export const SystemStatusDropdown: React.FC<SystemStatusDropdownProps> = ({ isOpen, onToggle, isMobile = false }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
 
@@ -56,12 +57,16 @@ export const SystemStatusDropdown: React.FC<SystemStatusDropdownProps> = ({ isOp
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-full right-0 mt-2 z-50 w-full sm:w-96 max-w-[calc(100vw-2rem)]">
+    <div className={`absolute z-50 ${
+      isMobile 
+        ? 'top-0 left-0 right-0 mt-0 mx-0' 
+        : 'top-full right-0 mt-2 w-full sm:w-96 max-w-[calc(100vw-2rem)]'
+    }`}>
       <Card className="glass-card border-white/20 shadow-2xl">
         <CardContent className="p-3 sm:p-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base sm:text-lg font-semibold text-white">System Status</h3>
-            <Badge className="neon-indicator text-xs">All Systems Operational</Badge>
+            <Badge className="neon-indicator text-xs whitespace-nowrap">All Systems Operational</Badge>
           </div>
           
           <div className="space-y-3">
@@ -90,7 +95,7 @@ export const SystemStatusDropdown: React.FC<SystemStatusDropdownProps> = ({ isOp
                 size="sm"
                 variant="outline"
                 onClick={handleViewSystemLog}
-                className="border-white/20 text-white hover:bg-white/10 text-xs min-h-[40px]"
+                className="border-white/20 text-white hover:bg-white/10 text-xs min-h-[40px] w-full"
               >
                 <Eye className="w-3 h-3 mr-1" />
                 View Log
@@ -100,7 +105,7 @@ export const SystemStatusDropdown: React.FC<SystemStatusDropdownProps> = ({ isOp
                 variant="outline"
                 onClick={handleRefreshConnection}
                 disabled={isRefreshing}
-                className="border-white/20 text-white hover:bg-white/10 text-xs min-h-[40px]"
+                className="border-white/20 text-white hover:bg-white/10 text-xs min-h-[40px] w-full"
               >
                 {isRefreshing ? (
                   <>
@@ -118,7 +123,7 @@ export const SystemStatusDropdown: React.FC<SystemStatusDropdownProps> = ({ isOp
                 size="sm"
                 variant="outline"
                 onClick={handleToggleSystemStatus}
-                className="border-white/20 text-white hover:bg-white/10 text-xs min-h-[40px]"
+                className="border-white/20 text-white hover:bg-white/10 text-xs min-h-[40px] w-full"
               >
                 <Power className="w-3 h-3 mr-1" />
                 Toggle
@@ -128,7 +133,7 @@ export const SystemStatusDropdown: React.FC<SystemStatusDropdownProps> = ({ isOp
             {/* Recent Activity */}
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-slate-300">Recent Activity</h4>
-              <div className="max-h-32 sm:max-h-48 overflow-y-auto space-y-2">
+              <div className="max-h-32 sm:max-h-48 overflow-y-auto space-y-2 overscroll-contain">
                 {systemLogs.map((log, index) => (
                   <div key={index} className="flex items-start space-x-2 sm:space-x-3 p-2 glass-card-light rounded text-xs sm:text-sm">
                     <div className="flex items-center space-x-2 min-w-0 flex-1">
