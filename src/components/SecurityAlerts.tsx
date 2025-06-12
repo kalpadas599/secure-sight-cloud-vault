@@ -154,34 +154,46 @@ export const SecurityAlerts: React.FC = () => {
               <p className="text-slate-400 text-center py-8">No active alerts</p>
             ) : (
               activeAlerts.map((alert) => (
-                <div key={alert.id} className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg border-l-4 border-red-500">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      {getAlertIcon(alert.type)}
-                      <Badge className={getSeverityColor(alert.severity)}>
-                        {alert.severity}
-                      </Badge>
-                    </div>
-                    <div>
-                      <div className="font-medium">{alert.description}</div>
-                      <div className="text-sm text-slate-400">
-                        {alert.camera} • {alert.time}
+                <div key={alert.id} className="bg-slate-700/50 rounded-lg border-l-4 border-red-500">
+                  {/* Mobile-first responsive layout */}
+                  <div className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    {/* Content section */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                      <div className="flex items-center space-x-2 flex-shrink-0">
+                        {getAlertIcon(alert.type)}
+                        <Badge className={getSeverityColor(alert.severity)}>
+                          {alert.severity}
+                        </Badge>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-white">{alert.description}</div>
+                        <div className="text-sm text-slate-400">
+                          {alert.camera} • {alert.time}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" className="border-slate-600 text-slate-300">
-                      <Eye className="w-4 h-4 mr-1" />
-                      View
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="border-green-600 text-green-400 hover:bg-green-600 hover:text-white"
-                      onClick={() => handleResolveAlert(alert.id)}
-                    >
-                      Resolve
-                    </Button>
+                    
+                    {/* Action buttons section - responsive layout */}
+                    <div className="flex gap-2 justify-end sm:justify-start sm:flex-shrink-0">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-slate-600 text-slate-300 flex-1 sm:flex-initial min-h-[36px]"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        <span className="hidden xs:inline">View</span>
+                        <span className="xs:hidden">View</span>
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-green-600 text-green-400 hover:bg-green-600 hover:text-white flex-1 sm:flex-initial min-h-[36px]"
+                        onClick={() => handleResolveAlert(alert.id)}
+                      >
+                        <span className="hidden xs:inline">Resolve</span>
+                        <span className="xs:hidden">Fix</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))
@@ -198,18 +210,21 @@ export const SecurityAlerts: React.FC = () => {
         <CardContent>
           <div className="space-y-3">
             {resolvedAlerts.slice(0, 5).map((alert) => (
-              <div key={alert.id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-2">
-                    {getAlertIcon(alert.type)}
-                    <Badge variant="outline" className="border-slate-600 text-slate-400">
-                      resolved
-                    </Badge>
-                  </div>
-                  <div>
-                    <div className="text-sm">{alert.description}</div>
-                    <div className="text-xs text-slate-400">
-                      {alert.camera} • {alert.time}
+              <div key={alert.id} className="bg-slate-700/30 rounded-lg">
+                {/* Mobile-first responsive layout for resolved alerts */}
+                <div className="p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <div className="flex items-center space-x-2 flex-shrink-0">
+                      {getAlertIcon(alert.type)}
+                      <Badge variant="outline" className="border-slate-600 text-slate-400">
+                        resolved
+                      </Badge>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm text-white">{alert.description}</div>
+                      <div className="text-xs text-slate-400">
+                        {alert.camera} • {alert.time}
+                      </div>
                     </div>
                   </div>
                 </div>

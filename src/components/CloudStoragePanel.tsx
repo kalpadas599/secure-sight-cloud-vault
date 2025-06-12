@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -156,46 +155,60 @@ export const CloudStoragePanel: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             {storageData.map((day, index) => (
-              <div key={day.date} className="flex items-center justify-between p-4 glass-card-light rounded-xl border border-white/5 transform transition-all duration-300 hover:scale-102 hover:border-cyan-400/20">
-                <div className="flex items-center space-x-4">
-                  <div className="text-sm font-medium text-white">{day.date}</div>
-                  <Badge variant="outline" className="border-cyan-500/30 text-cyan-300 bg-cyan-500/10">
-                    {day.files} files
-                  </Badge>
-                  <div className="text-sm text-sky-300 font-semibold">{day.size}</div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Badge className="neon-indicator">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Backed Up
-                  </Badge>
-                  <Button 
-                    size="sm" 
-                    className="premium-button transform transition-all duration-200 hover:scale-105"
-                    onClick={() => handleDownload(day.date, day.size)}
-                    disabled={downloadingItems.has(day.date)}
-                  >
-                    {downloadingItems.has(day.date) ? (
-                      <>
-                        <div className="w-4 h-4 mr-1 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                        Downloading...
-                      </>
-                    ) : (
-                      <>
-                        <Download className="w-4 h-4 mr-1" />
-                        Download
-                      </>
-                    )}
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400 transition-all duration-300 transform hover:scale-105"
-                    onClick={() => handleDeleteClick(day.date)}
-                  >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    Delete
-                  </Button>
+              <div key={day.date} className="glass-card-light rounded-xl border border-white/5 transform transition-all duration-300 hover:scale-102 hover:border-cyan-400/20">
+                {/* Mobile-first responsive layout */}
+                <div className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  {/* Content section */}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 min-w-0 flex-1">
+                    <div className="text-sm font-medium text-white">{day.date}</div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="outline" className="border-cyan-500/30 text-cyan-300 bg-cyan-500/10 text-xs">
+                        {day.files} files
+                      </Badge>
+                      <div className="text-sm text-sky-300 font-semibold">{day.size}</div>
+                    </div>
+                  </div>
+                  
+                  {/* Action buttons section - responsive layout */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 sm:flex-shrink-0">
+                    <Badge className="neon-indicator text-center sm:text-left">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      Backed Up
+                    </Badge>
+                    
+                    <div className="flex gap-2 justify-end sm:justify-start">
+                      <Button 
+                        size="sm" 
+                        className="premium-button transform transition-all duration-200 hover:scale-105 flex-1 sm:flex-initial min-h-[36px]"
+                        onClick={() => handleDownload(day.date, day.size)}
+                        disabled={downloadingItems.has(day.date)}
+                      >
+                        {downloadingItems.has(day.date) ? (
+                          <>
+                            <div className="w-4 h-4 mr-1 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                            <span className="hidden xs:inline">Downloading...</span>
+                            <span className="xs:hidden">...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Download className="w-4 h-4 mr-1" />
+                            <span className="hidden xs:inline">Download</span>
+                            <span className="xs:hidden">DL</span>
+                          </>
+                        )}
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400 transition-all duration-300 transform hover:scale-105 flex-1 sm:flex-initial min-h-[36px]"
+                        onClick={() => handleDeleteClick(day.date)}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        <span className="hidden xs:inline">Delete</span>
+                        <span className="xs:hidden">Del</span>
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

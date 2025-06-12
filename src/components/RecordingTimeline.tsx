@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -93,53 +92,64 @@ export const RecordingTimeline: React.FC = () => {
                 const isDownloading = downloadingItems.has(recordingId);
                 
                 return (
-                  <div key={index} className="flex items-center justify-between p-4 glass-card-light rounded-lg transform transition-all duration-300 hover:scale-102 hover:border-cyan-400/20 border border-transparent">
-                    <div className="flex items-center space-x-4">
-                      <div className="text-sm font-mono text-cyan-300">{recording.time}</div>
-                      <div className="flex items-center space-x-2">
-                        <Camera className="w-4 h-4 text-blue-500" />
-                        <span className="text-sm text-white">{recording.camera}</span>
+                  <div key={index} className="glass-card-light rounded-lg transform transition-all duration-300 hover:scale-102 hover:border-cyan-400/20 border border-transparent">
+                    {/* Mobile-first responsive layout */}
+                    <div className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                      {/* Content section */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 min-w-0 flex-1">
+                        <div className="text-sm font-mono text-cyan-300">{recording.time}</div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <div className="flex items-center space-x-2">
+                            <Camera className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            <span className="text-sm text-white">{recording.camera}</span>
+                          </div>
+                          <Badge 
+                            variant="outline" 
+                            className={`border-slate-600 text-xs ${
+                              recording.type === 'motion' 
+                                ? 'text-yellow-400 border-yellow-600 bg-yellow-500/10' 
+                                : 'text-blue-400 border-blue-600 bg-blue-500/10'
+                            }`}
+                          >
+                            {recording.type}
+                          </Badge>
+                          <span className="text-sm text-slate-400">{recording.duration}</span>
+                        </div>
                       </div>
-                      <Badge 
-                        variant="outline" 
-                        className={`border-slate-600 ${
-                          recording.type === 'motion' 
-                            ? 'text-yellow-400 border-yellow-600 bg-yellow-500/10' 
-                            : 'text-blue-400 border-blue-600 bg-blue-500/10'
-                        }`}
-                      >
-                        {recording.type}
-                      </Badge>
-                      <span className="text-sm text-slate-400">{recording.duration}</span>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button 
-                        size="sm" 
-                        className="premium-button transform transition-all duration-200 hover:scale-105"
-                        onClick={() => handleView(recording)}
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        View
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="border-slate-600 text-slate-300 hover:bg-white/10 transform transition-all duration-200 hover:scale-105"
-                        onClick={() => handleDownload(recording)}
-                        disabled={isDownloading}
-                      >
-                        {isDownloading ? (
-                          <>
-                            <div className="w-4 h-4 mr-1 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                            Downloading
-                          </>
-                        ) : (
-                          <>
-                            <Download className="w-4 h-4 mr-1" />
-                            Download
-                          </>
-                        )}
-                      </Button>
+                      
+                      {/* Action buttons section - responsive layout */}
+                      <div className="flex gap-2 justify-end sm:justify-start sm:flex-shrink-0">
+                        <Button 
+                          size="sm" 
+                          className="premium-button transform transition-all duration-200 hover:scale-105 flex-1 sm:flex-initial min-h-[36px]"
+                          onClick={() => handleView(recording)}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          <span className="hidden xs:inline">View</span>
+                          <span className="xs:hidden">View</span>
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="border-slate-600 text-slate-300 hover:bg-white/10 transform transition-all duration-200 hover:scale-105 flex-1 sm:flex-initial min-h-[36px]"
+                          onClick={() => handleDownload(recording)}
+                          disabled={isDownloading}
+                        >
+                          {isDownloading ? (
+                            <>
+                              <div className="w-4 h-4 mr-1 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                              <span className="hidden xs:inline">Downloading</span>
+                              <span className="xs:hidden">...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Download className="w-4 h-4 mr-1" />
+                              <span className="hidden xs:inline">Download</span>
+                              <span className="xs:hidden">DL</span>
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -198,7 +208,7 @@ export const RecordingTimeline: React.FC = () => {
       {/* Video Modal */}
       {selectedRecording && (
         <Dialog open={showVideoModal} onOpenChange={setShowVideoModal}>
-          <DialogContent className="glass-card border-white/20 max-w-4xl">
+          <DialogContent className="glass-card border-white/20 max-w-4xl max-w-[95vw] sm:max-w-4xl">
             <DialogHeader>
               <DialogTitle className="text-white flex items-center space-x-3">
                 <Camera className="w-6 h-6 text-cyan-400" />
@@ -247,7 +257,7 @@ export const RecordingTimeline: React.FC = () => {
               </div>
 
               {/* Recording Info */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Card className="glass-card-light border-white/10">
                   <CardContent className="p-4">
                     <div className="space-y-2">
