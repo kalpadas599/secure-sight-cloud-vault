@@ -58,6 +58,14 @@ export const CCTVDashboard: React.FC<CCTVDashboardProps> = ({ onLogout }) => {
     }
   };
 
+  // Handle overlay click for mobile dropdown
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    // Only close if clicking the overlay itself, not its children
+    if (e.target === e.currentTarget) {
+      handleSystemStatusToggle();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-purple-950 text-white">
       {/* Mobile-Responsive Header */}
@@ -170,10 +178,10 @@ export const CCTVDashboard: React.FC<CCTVDashboardProps> = ({ onLogout }) => {
           </div>
         )}
 
-        {/* Mobile System Status Dropdown - Full Width Overlay */}
+        {/* Mobile System Status Dropdown - Full Width Overlay with proper event handling */}
         {showSystemStatus && (
-          <div className="lg:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm" onClick={handleSystemStatusToggle}>
-            <div className="absolute top-20 left-4 right-4 max-h-[calc(100vh-6rem)] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="lg:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm" onClick={handleOverlayClick}>
+            <div className="absolute top-20 left-4 right-4 max-h-[calc(100vh-6rem)] overflow-y-auto">
               <SystemStatusDropdown 
                 isOpen={showSystemStatus}
                 onToggle={handleSystemStatusToggle}
