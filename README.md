@@ -1,6 +1,7 @@
-# Welcome to your Lovable project
 
 ## Project info
+
+![Image](https://github.com/user-attachments/assets/2ee6a2d4-1ab0-4b7e-ae45-2294beb6a74b)
 
 **URL**: https://lovable.dev/projects/f9c95174-9159-458f-bbe9-c6300115926e
 
